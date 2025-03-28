@@ -1,0 +1,7 @@
+README.md
+TODO.md
+LICENSE
+.vscode/*
+.docker
+.gitignore
+.gitattributes
