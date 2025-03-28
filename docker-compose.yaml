@@ -1,0 +1,13 @@
+services:
+  app:
+    container_name: gosurf
+    build:
+      dockerfile: Dockerfile
+      context: .
+    networks:
+      - app-network
+    ports:
+      - "8081:8081"
+
+networks:
+  app-network:

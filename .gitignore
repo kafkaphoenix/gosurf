@@ -1,0 +1,18 @@
+TODO.md
+
+# Docker
+.docker
+
+# GO
+# ref: https://github.com/github/gitignore/blob/main/Go.gitignore
+
+*.dll
+*.dylib
+*.exe
+*.exe~
+*.out
+*.so
+*.test
+go.work
+go.work.sum
+dist/
