@@ -9,6 +9,6 @@ func Run() error {
 	// 3. handler
 	// 4. server + routes
 	// 5. gracefully shutdown
-	slog.Info("A lot to do!")
+	slog.Info("A lot to do!") //nolint:sloglint //temporary
 	return nil
 }

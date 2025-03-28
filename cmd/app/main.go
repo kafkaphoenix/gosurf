@@ -1,13 +1,13 @@
 package main
 
 import (
-	"log/slog"
+	"log"
 
 	"github.com/kafkaphoenix/gosurf/cmd/app/bootstrap"
 )
 
 func main() {
 	if err := bootstrap.Run(); err != nil {
-		slog.Error("Application failed to run", slog.String("error", err.Error()))
+		log.Fatal(err)
 	}
 }

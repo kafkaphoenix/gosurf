@@ -2,7 +2,7 @@ package domain
 
 import "time"
 
-// User represent basic user's information
+// User represent basic user's information.
 type User struct {
 	ID        int
 	Name      string
