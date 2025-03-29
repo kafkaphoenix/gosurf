@@ -68,3 +68,15 @@ func (s *UserHandlerTestSuite) TestGetTotalActionsByID() {
 	expectedResponse := `{"count":49}`
 	s.Equal(expectedResponse, rec.Body.String())
 }
+
+func (s *UserHandlerTestSuite) TestGetRefferalsIndex() {
+	// GIVEN
+	req := httptest.NewRequest(http.MethodGet, "/v1/referral-index", nil)
+	rec := httptest.NewRecorder()
+
+	// WHEN
+	s.srv.Config.Handler.ServeHTTP(rec, req)
+
+	// THEN
+	s.Equal(http.StatusOK, rec.Code)
+}

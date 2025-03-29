@@ -60,3 +60,8 @@ curl -X GET http://localhost:8081/v1/users/1/actions/total
 ```sh
 curl -X GET "http://localhost:8081/v1/actions/next-probabilities?type=REFER_USER"
 ```
+
+### Get Referral index
+```sh
+curl -X GET "http://localhost:8081/v1/referral-index"
+```

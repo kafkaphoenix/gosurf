@@ -39,3 +39,54 @@ func (s *UserService) GetTotalActionsByID(userID int) (*domain.TotalActions, err
 
 	return &domain.TotalActions{Count: len(actions)}, nil
 }
+
+// GetReferralIndex return referral index for all users
+// using BFS graph traversal.
+func (s *UserService) GetReferralIndex() domain.ReferralIndex {
+	referralGraph := make(map[int][]int)
+
+	// build referral graph looping through all actions
+	// O(n^2)
+	for _, actions := range s.db.Actions {
+		for _, userAction := range actions {
+			if userAction.Type == "REFER_USER" {
+				referralGraph[userAction.UserID] = append(referralGraph[userAction.UserID], userAction.TargetUser)
+			}
+		}
+	}
+
+	// we are guessing worst case for capacity one user referred everyone
+	referralIndex := make(domain.ReferralIndex, len(s.db.Users)-1)
+
+	// use BFS (Breadth-first search) to get each user's referrals
+	// O(n^2)
+	for uid := range s.db.Users {
+		visited := make(map[int]bool)
+		visited[uid] = true
+		queue := referralGraph[uid]
+		count := 0
+
+		for len(queue) > 0 {
+			// pop from the front of the queue
+			current := queue[0]
+			queue = queue[1:]
+
+			if !visited[current] {
+				visited[current] = true
+				count++
+				// add their referrals to the queue if not visited before
+				if referrals, ok := referralGraph[current]; ok {
+					for _, referral := range referrals {
+						if !visited[referral] {
+							queue = append(queue, referral)
+						}
+					}
+				}
+			}
+		}
+
+		referralIndex[uid] = domain.Referral{Count: count}
+	}
+
+	return referralIndex
+}

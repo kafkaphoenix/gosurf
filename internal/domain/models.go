@@ -23,3 +23,9 @@ type Action struct {
 type TotalActions struct {
 	Count int `json:"count"`
 }
+
+type Referral struct {
+	Count int
+}
+
+type ReferralIndex map[int]Referral

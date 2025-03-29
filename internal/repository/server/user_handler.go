@@ -20,6 +20,9 @@ func (h *UserHandler) RegisterRoutes(mux *http.ServeMux) {
 	// ordered starting with the most specific
 	mux.HandleFunc("/v1/users/{id}/actions/total", h.getTotalActionsByID)
 	mux.HandleFunc("/v1/users/{id}", h.getUserByID)
+
+	// to avoid overlapping path issues
+	mux.HandleFunc("/v1/referral-index", h.getReferralIndex)
 }
 
 func (h *UserHandler) getUserByID(w http.ResponseWriter, r *http.Request) {
@@ -66,6 +69,24 @@ func (h *UserHandler) getTotalActionsByID(w http.ResponseWriter, r *http.Request
 	}
 
 	js, err := json.Marshal(total)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	_, err = w.Write(js)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func (h *UserHandler) getReferralIndex(w http.ResponseWriter, _ *http.Request) {
+	rIndex := h.service.GetReferralIndex()
+
+	js, err := json.Marshal(rIndex)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
