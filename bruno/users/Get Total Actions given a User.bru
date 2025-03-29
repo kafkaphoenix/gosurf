@@ -1,0 +1,11 @@
+meta {
+  name: Get Total Actions given a User
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:8081/v1/users/1/actions/total
+  body: none
+  auth: inherit
+}

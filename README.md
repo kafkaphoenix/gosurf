@@ -44,7 +44,11 @@ make clean
 make logs
 ```
 
-### 4. Testing endpoints:
+### 4. Testing endpoints with [bruno](https://www.usebruno.com/):
+Bruno is a Fast and Git-Friendly Opensource API client. Collection can be found
+in the `bruno` folder.
+
+### 5. Testing endpoints with CURL:
 
 #### Get User
 ```sh

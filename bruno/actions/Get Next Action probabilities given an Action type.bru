@@ -1,0 +1,15 @@
+meta {
+  name: Get Next Action probabilities given an Action type
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:8081/v1/actions/next-probabilities?type=REFER_USER
+  body: none
+  auth: inherit
+}
+
+params:query {
+  type: REFER_USER
+}
