@@ -44,5 +44,28 @@ make clean
 make logs
 ```
 
-### 4. Testing endpoints:
-TODO
+### 4. Testing endpoints with [bruno](https://www.usebruno.com/):
+Bruno is a Fast and Git-Friendly Opensource API client. Collection can be found
+in the `bruno` folder.
+
+### 5. Testing endpoints with CURL:
+
+#### Get User
+```sh
+curl -X GET http://localhost:8081/v1/users/1
+```
+
+### Get Total Actions given a User
+```sh
+curl -X GET http://localhost:8081/v1/users/1/actions/total
+```
+
+### Get Next Action probabilities given an Action type
+```sh
+curl -X GET "http://localhost:8081/v1/actions/next-probabilities?type=REFER_USER"
+```
+
+### Get Referral index
+```sh
+curl -X GET "http://localhost:8081/v1/referral-index"
+```

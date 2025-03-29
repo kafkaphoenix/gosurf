@@ -45,6 +45,7 @@ WORKDIR /app
 
 # copy binaries and config files
 COPY --from=builder --chown=${UID}:${GID} /app/gosurf .
+COPY --from=builder --chown=${UID}:${GID} /app/db/ db/
 
 # drop root privileges
 USER ${USER}

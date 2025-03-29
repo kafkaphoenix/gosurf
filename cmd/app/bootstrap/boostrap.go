@@ -1,14 +1,49 @@
 package bootstrap
 
-import "log/slog"
+import (
+	"log/slog"
+	"os"
+
+	"github.com/kafkaphoenix/gosurf/internal/repository"
+	"github.com/kafkaphoenix/gosurf/internal/repository/server"
+	"github.com/kafkaphoenix/gosurf/internal/usecases"
+)
 
 // Run starts the application.
 func Run() error {
-	// 1. logger
-	// 2. usecases
-	// 3. handler
-	// 4. server + routes
-	// 5. gracefully shutdown
-	slog.Info("A lot to do!") //nolint:sloglint //temporary
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
+	db, err := repository.NewFakeDB("db/users.json", "db/actions.json")
+	if err != nil {
+		return &AppError{Message: "error loading fakedb", Err: err}
+	}
+
+	userService := usecases.NewUserService(db)
+	userHandler := server.NewUserHandler(userService)
+	actionService := usecases.NewActionService(db)
+	actionHandler := server.NewActionHandler(actionService)
+
+	srv, err := server.New(logger)
+	if err != nil {
+		return &AppError{
+			Message: "error creating HTTP server",
+			Err:     err,
+		}
+	}
+
+	if err := srv.RegisterRoutes(userHandler.RegisterRoutes, actionHandler.RegisterRoutes); err != nil {
+		return &AppError{
+			Message: "error registering server routes",
+			Err:     err,
+		}
+	}
+
+	if err := srv.Start(); err != nil {
+		return &AppError{
+			Message: "error starting HTTP server",
+			Err:     err,
+		}
+	}
+
 	return nil
 }
