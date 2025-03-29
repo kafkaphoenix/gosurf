@@ -11,6 +11,8 @@ This project follows clean architecture:
 
 Additionaly, `cmd` is our entry point.
 
+Please refer to [/docs/README.md](./docs/README.md) for more information about the project structure and design choices.
+
 ## Requirements
 To run this project, please follow the steps listed below:
 
@@ -44,8 +46,8 @@ make clean
 make logs
 ```
 
-### 4. Testing endpoints with [bruno](https://www.usebruno.com/):
-Bruno is a Fast and Git-Friendly Opensource API client. Collection can be found
+### 4. Testing endpoints with Bruno:
+[Bruno](https://www.usebruno.com/) is a Fast and Git-Friendly Opensource API client. Collection can be found
 in the `bruno` folder.
 
 ### 5. Testing endpoints with CURL:
