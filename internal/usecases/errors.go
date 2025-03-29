@@ -1,9 +1,9 @@
 package usecases
 
-type UserServiceError struct {
+type ServiceError struct {
 	Message string
 }
 
-func (e *UserServiceError) Error() string {
+func (e *ServiceError) Error() string {
 	return e.Message
 }

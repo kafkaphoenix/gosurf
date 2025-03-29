@@ -13,13 +13,15 @@ import (
 func Run() error {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
-	fakedb, err := repository.NewFakeDB("db/users.json", "db/actions.json")
+	db, err := repository.NewFakeDB("db/users.json", "db/actions.json")
 	if err != nil {
 		return &AppError{Message: "error loading fakedb", Err: err}
 	}
 
-	userService := usecases.NewUserService(fakedb)
+	userService := usecases.NewUserService(db)
 	userHandler := server.NewUserHandler(userService)
+	actionService := usecases.NewActionService(db)
+	actionHandler := server.NewActionHandler(actionService)
 
 	srv, err := server.New(logger)
 	if err != nil {
@@ -29,7 +31,7 @@ func Run() error {
 		}
 	}
 
-	if err := srv.RegisterRoutes(userHandler.RegisterRoutes); err != nil {
+	if err := srv.RegisterRoutes(userHandler.RegisterRoutes, actionHandler.RegisterRoutes); err != nil {
 		return &AppError{
 			Message: "error registering server routes",
 			Err:     err,

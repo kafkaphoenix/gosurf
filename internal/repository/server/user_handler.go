@@ -17,7 +17,7 @@ func NewUserHandler(us *usecases.UserService) *UserHandler {
 }
 
 func (h *UserHandler) RegisterRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("/v1/user/{id}/", h.getUserByID)
+	mux.HandleFunc("/v1/users/{id}/", h.getUserByID)
 }
 
 func (h *UserHandler) getUserByID(w http.ResponseWriter, r *http.Request) {
@@ -34,15 +34,17 @@ func (h *UserHandler) getUserByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	renderJSON(w, user)
-}
-
-func renderJSON(w http.ResponseWriter, v any) {
-	js, err := json.Marshal(v)
+	js, err := json.Marshal(user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+
+	_, err = w.Write(js)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }

@@ -24,9 +24,10 @@ func New(logger *slog.Logger) (*Server, error) {
 	if port == "" {
 		port = "8081"
 	}
+
 	p, err := strconv.Atoi(port)
 	if err != nil {
-		return nil, &ServerError{Message: "invalid port", Err: err}
+		return nil, &HTTPError{Message: "invalid port", Err: err}
 	}
 
 	server := &Server{
@@ -38,6 +39,7 @@ func New(logger *slog.Logger) (*Server, error) {
 		},
 		port: p,
 	}
+
 	return server, nil
 }
 
@@ -52,6 +54,7 @@ func (s *Server) RegisterRoutes(handlers ...RouteRegistrer) error {
 	}
 
 	s.logger.Info("Routes registered")
+
 	return nil
 }
 
@@ -60,6 +63,7 @@ func (s *Server) Start() error {
 	defer stop()
 
 	s.logger.Info("Starting server", slog.Int("port", s.port))
+
 	go func() {
 		if err := s.srv.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) {
 			s.logger.Error("server error", slog.String("error", err.Error()))
@@ -75,13 +79,14 @@ func (s *Server) Start() error {
 	defer cancel()
 
 	if err := s.Shutdown(ctx); err != nil {
-		return &ServerError{
+		return &HTTPError{
 			Message: "error shutting down server",
 			Err:     err,
 		}
 	}
 
 	s.logger.Info("Server gracefully stopped")
+
 	return nil
 }
 

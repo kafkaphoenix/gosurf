@@ -13,23 +13,23 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type UserHandlerTestSuite struct {
+type ActionHandlerTestSuite struct {
 	suite.Suite
 	db      *repository.FakeDB
-	service *usecases.UserService
-	handler *server.UserHandler
+	service *usecases.ActionService
+	handler *server.ActionHandler
 	srv     *httptest.Server
 	router  *http.ServeMux
 }
 
-func (s *UserHandlerTestSuite) SetupSuite() {
+func (s *ActionHandlerTestSuite) SetupSuite() {
 	// set up db
 	db, err := repository.NewFakeDB("../../../db/users.json", "../../../db/actions.json")
 	s.NoError(err, "could no create DB")
 
 	// set up usecase and handler
-	s.service = usecases.NewUserService(db)
-	s.handler = server.NewUserHandler(s.service)
+	s.service = usecases.NewActionService(db)
+	s.handler = server.NewActionHandler(s.service)
 
 	// create router, testserver and register routes
 	s.router = http.NewServeMux()
@@ -37,13 +37,13 @@ func (s *UserHandlerTestSuite) SetupSuite() {
 	s.srv = httptest.NewServer(s.router)
 }
 
-func TestUserHandlerTestSuite(t *testing.T) {
-	suite.Run(t, new(UserHandlerTestSuite))
+func TestActionHandlerTestSuite(t *testing.T) {
+	suite.Run(t, new(ActionHandlerTestSuite))
 }
 
-func (s *UserHandlerTestSuite) TestGetUserByID() {
+func (s *ActionHandlerTestSuite) TestGetUserByID() {
 	// GIVEN
-	req := httptest.NewRequest(http.MethodGet, "/v1/users/1/", nil)
+	req := httptest.NewRequest(http.MethodGet, "/v1/users/1/actions/total", nil)
 	rec := httptest.NewRecorder()
 
 	// WHEN
@@ -51,6 +51,6 @@ func (s *UserHandlerTestSuite) TestGetUserByID() {
 
 	// THEN
 	s.Equal(http.StatusOK, rec.Code)
-	expectedResponse := `{"id":1,"name":"Ferdinande","createdAt":"2020-07-14T05:48:54.798Z"}`
+	expectedResponse := `{"count":49}`
 	s.Equal(expectedResponse, rec.Body.String())
 }

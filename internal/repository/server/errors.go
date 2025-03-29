@@ -2,16 +2,16 @@ package server
 
 import "fmt"
 
-type ServerError struct {
+type HTTPError struct {
 	Message string
 	Err     error
 }
 
-func (e *ServerError) Error() string {
+func (e *HTTPError) Error() string {
 	return fmt.Sprintf("%s: %v", e.Message, e.Err)
 }
 
-func (e *ServerError) Unwrap() error {
+func (e *HTTPError) Unwrap() error {
 	return e.Err
 }
 

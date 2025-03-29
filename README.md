@@ -48,5 +48,10 @@ make logs
 
 #### Get User
 ```sh
-curl -X GET http://localhost:8081/v1/user/1
+curl -X GET http://localhost:8081/v1/users/1
+```
+
+### Get Total Actions given a User
+```sh
+curl -X GET http://localhost:8081/v1/users/1/actions/total
 ```
