@@ -73,3 +73,5 @@ For the fourth endpoint, we require a referral graph, which I moved to the datab
 Additionally, in a real-world scenario where large amounts of data are sent in responses, I would add middleware to compress the response.
 
 I would also consider using caching, adding indexes to the database, and other performance optimizations.
+
+I would also consider adding rlocks and locks if a DB was added depending of the query.
