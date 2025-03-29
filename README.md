@@ -55,3 +55,8 @@ curl -X GET http://localhost:8081/v1/users/1
 ```sh
 curl -X GET http://localhost:8081/v1/users/1/actions/total
 ```
+
+### Get Next Actions probability given a Action type
+```sh
+curl -X GET "http://localhost:8081/v1/actions/next?type=REFER_USER"
+```

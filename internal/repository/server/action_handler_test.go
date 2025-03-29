@@ -54,3 +54,17 @@ func (s *ActionHandlerTestSuite) TestGetUserByID() {
 	expectedResponse := `{"count":49}`
 	s.Equal(expectedResponse, rec.Body.String())
 }
+
+func (s *ActionHandlerTestSuite) TestGetNextActionProbability() {
+	// GIVEN
+	req := httptest.NewRequest(http.MethodGet, "/v1/actions/next?type=REFER_USER", nil)
+	rec := httptest.NewRecorder()
+
+	// WHEN
+	s.srv.Config.Handler.ServeHTTP(rec, req)
+
+	// THEN
+	s.Equal(http.StatusOK, rec.Code)
+	expectedResponse := `{"ADD_CONTACT":0.29,"EDIT_CONTACT":0.35,"REFER_USER":0.05,"VIEW_CONTACTS":0.31}`
+	s.Equal(expectedResponse, rec.Body.String())
+}

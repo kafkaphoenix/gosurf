@@ -18,6 +18,7 @@ func NewActionHandler(as *usecases.ActionService) *ActionHandler {
 
 func (h *ActionHandler) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("/v1/users/{id}/actions/total", h.getActionsByID)
+	mux.HandleFunc("/v1/actions/next", h.getNextActionProbabilities)
 }
 
 func (h *ActionHandler) getActionsByID(w http.ResponseWriter, r *http.Request) {
@@ -47,4 +48,27 @@ func (h *ActionHandler) getActionsByID(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func (h *ActionHandler) getNextActionProbabilities(w http.ResponseWriter, r *http.Request) {
+	actionType := r.URL.Query().Get("type")
+	if actionType == "" {
+		http.Error(w, "missing type parameter", http.StatusBadRequest)
+		return
+	}
+
+	probabilities, err := h.service.GetNextActionProbabilities(actionType)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	js, err := json.Marshal(probabilities)
+	if err != nil {
+		http.Error(w, "Failed to serialize response", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
 }
