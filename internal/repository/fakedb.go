@@ -9,14 +9,16 @@ import (
 )
 
 type FakeDB struct {
-	Users   map[int]domain.User
-	Actions map[int][]domain.Action
+	Users         map[int]domain.User
+	Actions       map[int][]domain.Action
+	ReferralGraph map[int][]int
 }
 
 // NewFakeDB initializes the fake db by loading JSON data.
 func NewFakeDB(userFile, actionFile string) (*FakeDB, error) {
 	users := make(map[int]domain.User)
 	actions := make(map[int][]domain.Action)
+	referralGraph := make(map[int][]int)
 
 	userData, err := os.ReadFile(userFile)
 	if err != nil {
@@ -45,6 +47,11 @@ func NewFakeDB(userFile, actionFile string) (*FakeDB, error) {
 	// we group actions by user id
 	for _, action := range actionList {
 		actions[action.UserID] = append(actions[action.UserID], action)
+
+		// build referral graph
+		if action.Type == "REFER_USER" {
+			referralGraph[action.UserID] = append(referralGraph[action.UserID], action.TargetUser)
+		}
 	}
 
 	// sort actions for each user by CreatedAt
@@ -57,5 +64,5 @@ func NewFakeDB(userFile, actionFile string) (*FakeDB, error) {
 		actions[user] = userActions
 	}
 
-	return &FakeDB{Users: users, Actions: actions}, nil
+	return &FakeDB{Users: users, Actions: actions, ReferralGraph: referralGraph}, nil
 }
