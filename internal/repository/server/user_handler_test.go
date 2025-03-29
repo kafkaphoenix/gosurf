@@ -43,7 +43,7 @@ func TestUserHandlerTestSuite(t *testing.T) {
 
 func (s *UserHandlerTestSuite) TestGetUserByID() {
 	// GIVEN
-	req := httptest.NewRequest(http.MethodGet, "/v1/users/1/", nil)
+	req := httptest.NewRequest(http.MethodGet, "/v1/users/1", nil)
 	rec := httptest.NewRecorder()
 
 	// WHEN
@@ -52,5 +52,19 @@ func (s *UserHandlerTestSuite) TestGetUserByID() {
 	// THEN
 	s.Equal(http.StatusOK, rec.Code)
 	expectedResponse := `{"id":1,"name":"Ferdinande","createdAt":"2020-07-14T05:48:54.798Z"}`
+	s.Equal(expectedResponse, rec.Body.String())
+}
+
+func (s *UserHandlerTestSuite) TestGetTotalActionsByID() {
+	// GIVEN
+	req := httptest.NewRequest(http.MethodGet, "/v1/users/1/actions/total", nil)
+	rec := httptest.NewRecorder()
+
+	// WHEN
+	s.srv.Config.Handler.ServeHTTP(rec, req)
+
+	// THEN
+	s.Equal(http.StatusOK, rec.Code)
+	expectedResponse := `{"count":49}`
 	s.Equal(expectedResponse, rec.Body.String())
 }

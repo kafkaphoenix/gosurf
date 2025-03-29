@@ -41,23 +41,9 @@ func TestActionHandlerTestSuite(t *testing.T) {
 	suite.Run(t, new(ActionHandlerTestSuite))
 }
 
-func (s *ActionHandlerTestSuite) TestGetUserByID() {
-	// GIVEN
-	req := httptest.NewRequest(http.MethodGet, "/v1/users/1/actions/total", nil)
-	rec := httptest.NewRecorder()
-
-	// WHEN
-	s.srv.Config.Handler.ServeHTTP(rec, req)
-
-	// THEN
-	s.Equal(http.StatusOK, rec.Code)
-	expectedResponse := `{"count":49}`
-	s.Equal(expectedResponse, rec.Body.String())
-}
-
 func (s *ActionHandlerTestSuite) TestGetNextActionProbability() {
 	// GIVEN
-	req := httptest.NewRequest(http.MethodGet, "/v1/actions/next?type=REFER_USER", nil)
+	req := httptest.NewRequest(http.MethodGet, "/v1/actions/next-probabilities?type=REFER_USER", nil)
 	rec := httptest.NewRecorder()
 
 	// WHEN

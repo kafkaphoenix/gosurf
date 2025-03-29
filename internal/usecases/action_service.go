@@ -1,10 +1,8 @@
 package usecases
 
 import (
-	"fmt"
 	"math"
 
-	"github.com/kafkaphoenix/gosurf/internal/domain"
 	"github.com/kafkaphoenix/gosurf/internal/repository"
 )
 
@@ -14,21 +12,6 @@ type ActionService struct {
 
 func NewActionService(db *repository.FakeDB) *ActionService {
 	return &ActionService{db: db}
-}
-
-// GetTotalActionsByID return total actions of a user if exists.
-func (s *ActionService) GetTotalActionsByID(userID int) (*domain.TotalActions, error) {
-	_, exists := s.db.Users[userID]
-	if !exists {
-		return nil, &ServiceError{Message: fmt.Sprintf("user with id %d not found", userID)}
-	}
-
-	actions, exists := s.db.Actions[userID]
-	if !exists {
-		return nil, &ServiceError{Message: fmt.Sprintf("no actions found for user id %d", userID)}
-	}
-
-	return &domain.TotalActions{Count: len(actions)}, nil
 }
 
 // GetNextActionProbabilities return the next actions with their probabilities
@@ -56,6 +39,7 @@ func (s *ActionService) GetNextActionProbabilities(actionType string) (map[strin
 
 	// compute probabilities per next action given total actions done by user
 	probabilities := make(map[string]float64)
+
 	for nextAction, count := range nextActionCounts {
 		probability := float64(count) / float64(totalCount)
 		// we round to hundredths .XX as tenths add too much rounding error

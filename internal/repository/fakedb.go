@@ -48,6 +48,7 @@ func NewFakeDB(userFile, actionFile string) (*FakeDB, error) {
 	}
 
 	// sort actions for each user by CreatedAt
+	// O(n^2)?
 	for user, userActions := range actions {
 		sort.Slice(userActions, func(i, j int) bool {
 			return userActions[i].CreatedAt.Before(userActions[j].CreatedAt)

@@ -1,6 +1,8 @@
 package domain
 
-import "time"
+import (
+	"time"
+)
 
 // User represent basic user's information.
 type User struct {
@@ -17,8 +19,6 @@ type Action struct {
 	TargetUser int       `json:"targetUser,omitempty"`
 	CreatedAt  time.Time `json:"createdAt"`
 }
-
-type Actions []Action
 
 type TotalActions struct {
 	Count int `json:"count"`

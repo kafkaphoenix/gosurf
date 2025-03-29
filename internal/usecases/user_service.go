@@ -24,3 +24,18 @@ func (s *UserService) GetUserByID(userID int) (*domain.User, error) {
 
 	return &user, nil
 }
+
+// GetTotalActionsByID return total actions of a user if exists.
+func (s *UserService) GetTotalActionsByID(userID int) (*domain.TotalActions, error) {
+	_, exists := s.db.Users[userID]
+	if !exists {
+		return nil, &ServiceError{Message: fmt.Sprintf("user with id %d not found", userID)}
+	}
+
+	actions, exists := s.db.Actions[userID]
+	if !exists {
+		return nil, &ServiceError{Message: fmt.Sprintf("no actions found for user id %d", userID)}
+	}
+
+	return &domain.TotalActions{Count: len(actions)}, nil
+}
