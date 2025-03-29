@@ -3,6 +3,7 @@ package repository
 import (
 	"encoding/json"
 	"os"
+	"sort"
 
 	"github.com/kafkaphoenix/gosurf/internal/domain"
 )
@@ -31,7 +32,6 @@ func NewFakeDB(userFile, actionFile string) (*FakeDB, error) {
 		users[user.ID] = user
 	}
 
-	// Load actions
 	actionData, err := os.ReadFile(actionFile)
 	if err != nil {
 		return nil, err
@@ -42,8 +42,18 @@ func NewFakeDB(userFile, actionFile string) (*FakeDB, error) {
 		return nil, err
 	}
 
+	// we group actions by user id
 	for _, action := range actionList {
 		actions[action.UserID] = append(actions[action.UserID], action)
+	}
+
+	// sort actions for each user by CreatedAt
+	for user, userActions := range actions {
+		sort.Slice(userActions, func(i, j int) bool {
+			return userActions[i].CreatedAt.Before(userActions[j].CreatedAt)
+		})
+
+		actions[user] = userActions
 	}
 
 	return &FakeDB{Users: users, Actions: actions}, nil
