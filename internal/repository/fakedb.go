@@ -48,15 +48,3 @@ func NewFakeDB(userFile, actionFile string) (*FakeDB, error) {
 
 	return &FakeDB{Users: users, Actions: actions}, nil
 }
-
-// GetTotal return total of users and actions.
-func (db *FakeDB) GetTotal() (int, int) {
-	userCount := len(db.Users)
-
-	actionCount := 0
-	for _, actions := range db.Actions {
-		actionCount += len(actions)
-	}
-
-	return userCount, actionCount
-}

@@ -45,4 +45,8 @@ make logs
 ```
 
 ### 4. Testing endpoints:
-TODO
+
+#### Get User
+```sh
+curl -X GET http://localhost:8081/v1/user/1
+```
