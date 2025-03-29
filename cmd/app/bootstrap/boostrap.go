@@ -13,7 +13,7 @@ import (
 func Run() error {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
-	fakedb, err := repository.NewFakeDB("db/actions.json", "db/users.json")
+	fakedb, err := repository.NewFakeDB("db/users.json", "db/actions.json")
 	if err != nil {
 		return &AppError{Message: "error loading fakedb", Err: err}
 	}
