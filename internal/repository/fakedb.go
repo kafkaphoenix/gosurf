@@ -3,7 +3,7 @@ package repository
 import (
 	"encoding/json"
 	"os"
-	"sort"
+	"slices"
 
 	"github.com/kafkaphoenix/gosurf/internal/domain"
 )
@@ -16,10 +16,6 @@ type FakeDB struct {
 
 // NewFakeDB initializes the fake db by loading JSON data.
 func NewFakeDB(userFile, actionFile string) (*FakeDB, error) {
-	users := make(map[int]domain.User)
-	actions := make(map[int][]domain.Action)
-	referralGraph := make(map[int][]int)
-
 	userData, err := os.ReadFile(userFile)
 	if err != nil {
 		return nil, err
@@ -30,6 +26,7 @@ func NewFakeDB(userFile, actionFile string) (*FakeDB, error) {
 		return nil, err
 	}
 
+	users := make(map[int]domain.User, len(userList))
 	for _, user := range userList {
 		users[user.ID] = user
 	}
@@ -44,6 +41,10 @@ func NewFakeDB(userFile, actionFile string) (*FakeDB, error) {
 		return nil, err
 	}
 
+	actions := make(map[int][]domain.Action, len(actionList))
+	// worst case every action is a REFER_USER action
+	referralGraph := make(map[int][]int, len(actionList))
+
 	// we group actions by user id
 	for _, action := range actionList {
 		actions[action.UserID] = append(actions[action.UserID], action)
@@ -55,13 +56,19 @@ func NewFakeDB(userFile, actionFile string) (*FakeDB, error) {
 	}
 
 	// sort actions for each user by CreatedAt
-	// O(n^2)?
-	for user, userActions := range actions {
-		sort.Slice(userActions, func(i, j int) bool {
-			return userActions[i].CreatedAt.Before(userActions[j].CreatedAt)
-		})
+	// complexity O(N Log N)
+	for uid := range actions {
+		slices.SortFunc(actions[uid], func(a, b domain.Action) int {
+			if a.CreatedAt.Before(b.CreatedAt) {
+				return -1
+			}
 
-		actions[user] = userActions
+			if a.CreatedAt.After(b.CreatedAt) {
+				return 1
+			}
+
+			return 0
+		})
 	}
 
 	return &FakeDB{Users: users, Actions: actions, ReferralGraph: referralGraph}, nil
