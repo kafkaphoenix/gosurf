@@ -1,4 +1,4 @@
-package repository
+package db
 
 import (
 	"encoding/json"
@@ -18,12 +18,12 @@ type FakeDB struct {
 func NewFakeDB(userFile, actionFile string) (*FakeDB, error) {
 	userData, err := os.ReadFile(userFile)
 	if err != nil {
-		return nil, err
+		return nil, &DBError{Message: "error reading user file", Err: err}
 	}
 
 	var userList []domain.User
 	if err := json.Unmarshal(userData, &userList); err != nil {
-		return nil, err
+		return nil, &DBError{Message: "error unmarshaling user data", Err: err}
 	}
 
 	users := make(map[int]domain.User, len(userList))
@@ -33,12 +33,12 @@ func NewFakeDB(userFile, actionFile string) (*FakeDB, error) {
 
 	actionData, err := os.ReadFile(actionFile)
 	if err != nil {
-		return nil, err
+		return nil, &DBError{Message: "error reading action file", Err: err}
 	}
 
 	var actionList []domain.Action
 	if err := json.Unmarshal(actionData, &actionList); err != nil {
-		return nil, err
+		return nil, &DBError{Message: "error unmarshaling action data", Err: err}
 	}
 
 	actions := make(map[int][]domain.Action, len(actionList))

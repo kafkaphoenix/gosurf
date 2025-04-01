@@ -3,14 +3,14 @@ package usecases
 import (
 	"math"
 
-	"github.com/kafkaphoenix/gosurf/internal/repository"
+	"github.com/kafkaphoenix/gosurf/internal/repository/db"
 )
 
 type ActionService struct {
-	db *repository.FakeDB
+	db *db.FakeDB
 }
 
-func NewActionService(db *repository.FakeDB) *ActionService {
+func NewActionService(db *db.FakeDB) *ActionService {
 	return &ActionService{db: db}
 }
 

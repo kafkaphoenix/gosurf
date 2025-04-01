@@ -4,7 +4,7 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/kafkaphoenix/gosurf/internal/repository"
+	"github.com/kafkaphoenix/gosurf/internal/repository/db"
 	"github.com/kafkaphoenix/gosurf/internal/repository/server"
 	"github.com/kafkaphoenix/gosurf/internal/usecases"
 )
@@ -13,7 +13,7 @@ import (
 func Run() error {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
-	db, err := repository.NewFakeDB("db/users.json", "db/actions.json")
+	db, err := db.NewFakeDB("db/users.json", "db/actions.json")
 	if err != nil {
 		return &AppError{Message: "error loading fakedb", Err: err}
 	}
