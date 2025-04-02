@@ -16,25 +16,27 @@ func NewUserService(db *db.FakeDB) *UserService {
 }
 
 // GetUserByID return a user if exists.
-func (s *UserService) GetUserByID(userID int) (*domain.User, error) {
-	user, exists := s.db.Users[userID]
+func (s *UserService) GetUserByID(uid int) (*domain.User, error) {
+	user, exists := s.db.GetUser(uid)
 	if !exists {
-		return nil, &ServiceError{Message: fmt.Sprintf("user with id %d not found", userID)}
+		return nil, &ServiceError{Message: fmt.Sprintf("user with id %d not found", uid)}
 	}
 
 	return &user, nil
 }
 
 // GetTotalActionsByID return total actions of a user if exists.
-func (s *UserService) GetTotalActionsByID(userID int) (*domain.TotalActions, error) {
-	_, exists := s.db.Users[userID]
+func (s *UserService) GetTotalActionsByID(uid int) (*domain.TotalActions, error) {
+	// we repeat code here because GetUserByID could change in the future
+	// we could also guess the given user exists
+	_, exists := s.db.GetUser(uid)
 	if !exists {
-		return nil, &ServiceError{Message: fmt.Sprintf("user with id %d not found", userID)}
+		return nil, &ServiceError{Message: fmt.Sprintf("user with id %d not found", uid)}
 	}
 
-	actions, exists := s.db.Actions[userID]
+	actions, exists := s.db.GetActions(uid)
 	if !exists {
-		return nil, &ServiceError{Message: fmt.Sprintf("no actions found for user id %d", userID)}
+		return nil, &ServiceError{Message: fmt.Sprintf("no actions found for user id %d", uid)}
 	}
 
 	return &domain.TotalActions{Count: len(actions)}, nil
@@ -42,14 +44,15 @@ func (s *UserService) GetTotalActionsByID(userID int) (*domain.TotalActions, err
 
 // Complexity O(N**2 + N*E). Space Complexity O(N).
 func (s *UserService) GetReferralIndex() domain.ReferralIndex {
+	users := s.db.GetAllUsers()
 	// We are guessing worst case for capacity one user referred everyone
-	referralIndex := make(domain.ReferralIndex, len(s.db.Users)-1)
+	referralIndex := make(domain.ReferralIndex, len(users))
 
 	// BFS (Breadth-first search) to get each user's referrals
-	for uid := range s.db.Users {
+	for uid := range users {
 		visited := make(map[int]bool)
 		visited[uid] = true
-		queue := s.db.ReferralGraph[uid]
+		queue, _ := s.db.GetReferrals(uid)
 		count := 0
 
 		for len(queue) > 0 {
@@ -61,7 +64,7 @@ func (s *UserService) GetReferralIndex() domain.ReferralIndex {
 				visited[current] = true
 				count++
 				// add their referrals to the queue if not visited before
-				if referrals, ok := s.db.ReferralGraph[current]; ok {
+				if referrals, ok := s.db.GetReferrals(current); ok {
 					for _, referral := range referrals {
 						if !visited[referral] {
 							queue = append(queue, referral)

@@ -2,15 +2,15 @@ package db
 
 import "fmt"
 
-type DBError struct {
+type FakeDBError struct {
 	Message string
 	Err     error
 }
 
-func (e *DBError) Error() string {
+func (e *FakeDBError) Error() string {
 	return fmt.Sprintf("%s: %v", e.Message, e.Err)
 }
 
-func (e *DBError) Unwrap() error {
+func (e *FakeDBError) Unwrap() error {
 	return e.Err
 }
