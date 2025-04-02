@@ -16,7 +16,7 @@ func NewActionService(db *db.FakeDB) *ActionService {
 
 // GetNextActionProbabilities return the next actions with their probabilities
 // that could happen given an action type. Note: It is the agregated users
-// probability no per user.
+// probability not per user.
 func (s *ActionService) GetNextActionProbabilities(actionType string) (map[string]float64, error) {
 	nextActionCounts := make(map[string]int)
 	totalCount := 0

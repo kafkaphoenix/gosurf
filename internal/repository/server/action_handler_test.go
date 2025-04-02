@@ -25,7 +25,7 @@ type ActionHandlerTestSuite struct {
 func (s *ActionHandlerTestSuite) SetupSuite() {
 	// set up db
 	db, err := db.NewFakeDB("../../../db/users.json", "../../../db/actions.json")
-	s.NoError(err, "could no create DB")
+	s.NoError(err, "could not create DB")
 
 	// set up usecase and handler
 	s.service = usecases.NewActionService(db)
