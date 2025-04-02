@@ -20,6 +20,9 @@ type FakeDB struct {
 	// mu            sync.RWMutex // mutex for concurrent access
 }
 
+// interface guard.
+var _ domain.DBRepo = (*FakeDB)(nil)
+
 // NewFakeDB initialize the fake db by loading concurrently JSON data.
 func NewFakeDB(userFile, actionFile string) (*FakeDB, error) {
 	db := &FakeDB{}

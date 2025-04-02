@@ -4,14 +4,13 @@ import (
 	"fmt"
 
 	"github.com/kafkaphoenix/gosurf/internal/domain"
-	"github.com/kafkaphoenix/gosurf/internal/repository/db"
 )
 
 type UserService struct {
-	db *db.FakeDB
+	db domain.DBRepo
 }
 
-func NewUserService(db *db.FakeDB) *UserService {
+func NewUserService(db domain.DBRepo) *UserService {
 	return &UserService{db: db}
 }
 
