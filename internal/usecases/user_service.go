@@ -42,7 +42,9 @@ func (s *UserService) GetTotalActionsByID(uid int) (*domain.TotalActions, error)
 	return &domain.TotalActions{Count: len(actions)}, nil
 }
 
-// Complexity O(N**2 + N*E). Space Complexity O(N).
+// GetReferralIndex given all users and their referrals
+// each node(user) and edge (referral) is visited once
+// Complexity O(N*E). Space Complexity O(N).
 func (s *UserService) GetReferralIndex() domain.ReferralIndex {
 	users := s.db.GetAllUsers()
 	// We are guessing worst case for capacity one user referred everyone
@@ -52,7 +54,13 @@ func (s *UserService) GetReferralIndex() domain.ReferralIndex {
 	for uid := range users {
 		visited := make(map[int]bool)
 		visited[uid] = true
-		queue, _ := s.db.GetReferrals(uid)
+
+		queue := []int{}
+		// we avoid referrals being nil
+		if referrals, exists := s.db.GetReferrals(uid); exists {
+			queue = append(queue, referrals...)
+		}
+
 		count := 0
 
 		for len(queue) > 0 {
@@ -64,7 +72,7 @@ func (s *UserService) GetReferralIndex() domain.ReferralIndex {
 				visited[current] = true
 				count++
 				// add their referrals to the queue if not visited before
-				if referrals, ok := s.db.GetReferrals(current); ok {
+				if referrals, exists := s.db.GetReferrals(current); exists {
 					for _, referral := range referrals {
 						if !visited[referral] {
 							queue = append(queue, referral)

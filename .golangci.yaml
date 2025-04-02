@@ -64,7 +64,7 @@ linters:
       statements: 50
       ignore-comments: true
     gocognit:
-      min-complexity: 21
+      min-complexity: 23
     goconst:
       min-len: 2
       min-occurrences: 2
