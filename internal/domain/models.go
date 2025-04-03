@@ -29,3 +29,11 @@ type Referral struct {
 }
 
 type ReferralIndex map[int]Referral
+
+type DBRepo interface {
+	GetUser(id int) (User, bool)
+	GetAllUsers() map[int]User
+	GetActions(uid int) ([]Action, bool)
+	GetAllActions() map[int][]Action
+	GetReferrals(uid int) ([]int, bool)
+}

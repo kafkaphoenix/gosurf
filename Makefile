@@ -10,7 +10,11 @@ lint: ## Run golangci-lint fixing issues
 
 .PHONY: tests
 tests: ## Run tests
-	go test ./... --tags=integration,unit -coverpkg=./...	
+	go test ./... --tags=integration,unit -coverpkg=./...
+
+.PHONY: mocks
+mocks: ## Generate mocks
+	go generate ./...
 
 .PHONY: app
 app: ## Run app

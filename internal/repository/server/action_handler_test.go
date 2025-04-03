@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/kafkaphoenix/gosurf/internal/repository"
+	"github.com/kafkaphoenix/gosurf/internal/repository/db"
 	"github.com/kafkaphoenix/gosurf/internal/repository/server"
 	"github.com/kafkaphoenix/gosurf/internal/usecases"
 	"github.com/stretchr/testify/suite"
@@ -15,7 +15,7 @@ import (
 
 type ActionHandlerTestSuite struct {
 	suite.Suite
-	db      *repository.FakeDB
+	db      *db.FakeDB
 	service *usecases.ActionService
 	handler *server.ActionHandler
 	srv     *httptest.Server
@@ -24,8 +24,8 @@ type ActionHandlerTestSuite struct {
 
 func (s *ActionHandlerTestSuite) SetupSuite() {
 	// set up db
-	db, err := repository.NewFakeDB("../../../db/users.json", "../../../db/actions.json")
-	s.NoError(err, "could no create DB")
+	db, err := db.NewFakeDB("../../../db/users.json", "../../../db/actions.json")
+	s.NoError(err, "could not create DB")
 
 	// set up usecase and handler
 	s.service = usecases.NewActionService(db)

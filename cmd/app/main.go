@@ -1,3 +1,5 @@
+//go:generate go tool mockery
+
 package main
 
 import (
