@@ -16,7 +16,6 @@ linters:
     - goconst
     - gocritic
     - gocyclo
-    - godot
     - godox
     - goprintffuncname
     - gosec
@@ -76,9 +75,6 @@ linters:
           skipRecvDeref: false
     gocyclo:
       min-complexity: 15
-    godot:
-      scope: declarations
-      capital: true
     godox:
       keywords:
         - BUG
