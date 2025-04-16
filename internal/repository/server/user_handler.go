@@ -31,6 +31,7 @@ func (h *UserHandler) getUserByID(w http.ResponseWriter, r *http.Request) {
 	uid, err := strconv.Atoi(id)
 	if err != nil {
 		http.Error(w, "invalid id", http.StatusBadRequest)
+		return
 	}
 
 	user, err := h.service.GetUserByID(uid)
@@ -60,6 +61,7 @@ func (h *UserHandler) getTotalActionsByID(w http.ResponseWriter, r *http.Request
 	uid, err := strconv.Atoi(id)
 	if err != nil {
 		http.Error(w, "invalid id", http.StatusBadRequest)
+		return
 	}
 
 	total, err := h.service.GetTotalActionsByID(uid)

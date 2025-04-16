@@ -3,27 +3,28 @@ package usecases
 import (
 	"math"
 
-	"github.com/kafkaphoenix/gosurf/internal/repository"
+	"github.com/kafkaphoenix/gosurf/internal/repository/db"
 )
 
 type ActionService struct {
-	db *repository.FakeDB
+	db *db.FakeDB
 }
 
-func NewActionService(db *repository.FakeDB) *ActionService {
+func NewActionService(db *db.FakeDB) *ActionService {
 	return &ActionService{db: db}
 }
 
 // GetNextActionProbabilities return the next actions with their probabilities
-// that could happen given an action type. Note: It the agregated users
-// probability no per user.
+// that could happen given an action type. Note: It is the agregated users
+// probability not per user.
 func (s *ActionService) GetNextActionProbabilities(actionType string) (map[string]float64, error) {
 	nextActionCounts := make(map[string]int)
 	totalCount := 0
+	allActions := s.db.GetAllActions()
 
 	// iterate over every user's action history (sorted by createdAt)
-	for _, actions := range s.db.Actions {
-		for i := range len(actions) - 1 { // iterate users actions
+	for _, actions := range allActions {
+		for i := range len(actions) - 1 { // iterate each user actions
 			if actions[i].Type == actionType { // match action type we are looking for
 				nextAction := actions[i+1].Type // get next action type
 				nextActionCounts[nextAction]++  // add or increase next action counter
